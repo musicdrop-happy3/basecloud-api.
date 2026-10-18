@@ -33,9 +33,7 @@ app.get("/api/health", async (req, res) => {
     database: "not configured"
   };
 
-  if (!pool) {
-    return res.status(503).json(result);
-  }
+  if (!pool) return res.status(503).json(result);
 
   try {
     await pool.query("SELECT 1");
@@ -57,17 +55,11 @@ app.use((req, res) => {
 
 const server = app.listen(PORT, "0.0.0.0", () => {
   console.log("BaseCloud API listening on port " + PORT);
-
-  if (!process.env.DATABASE_URL) {
-    console.log("DATABASE_URL has not been configured.");
-  }
 });
 
 async function shutdown() {
   server.close(async () => {
-    if (pool) {
-      await pool.end();
-    }
+    if (pool) await pool.end();
     process.exit(0);
   });
 }
